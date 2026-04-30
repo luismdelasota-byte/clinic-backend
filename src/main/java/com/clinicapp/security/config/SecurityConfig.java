@@ -1,5 +1,3 @@
-/*Definimos que endponts son publicos y cuales requieren autenticacion*/
-
 package com.clinicapp.security.config;
 
 import com.clinicapp.security.jwt.JwtFilter;
@@ -25,53 +23,90 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
+@EnableWebSecurity //Activa Spring Security en la aplicacion
+@RequiredArgsConstructor //Evita escribir el constructor manualmente
 public class SecurityConfig {
 
+    //Inyeccion de CustomUserDetailsService, esto hace que Spring Security use el servicio para buscar
+    //usuarios en la base de datos
     private final CustomUserDetailsService userDetailsService;
+
+    //Intercepta las peticiones para vlaidar el token JWT
     private final JwtFilter jwtFilter;
 
+    // Encriptación de contraseñas y comparar en el login
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() { //Encripta la contrsaseña antes de guardarla
         return new BCryptPasswordEncoder();
     }
 
+    // AuthenticationManager usado para login
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    // Configuración principal de seguridad, aqui define como funciona la seguridad del sistema
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        //CONFIGURACION
+
         http
-                // Desactiva CSRF porque usamos JWT
+                // desactiva CSRF
                 .csrf(csrf -> csrf.disable())
 
-                // JWT no usa sesiones → stateless
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // JWT no usa sesiones, indica que la aplicaciones es STATELESS es decir sin estados
+                //No se guardan sesiones en el servidor, cada request debe trear su JWT en los headers
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
 
-                // Configuración de rutas
+                // Configuración de rutas, reglas de autorizacion
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()   // login y registro públicos
-                        .requestMatchers(HttpMethod.GET, "/public/**").permitAll() // ejemplo de otros públicos
-                        .anyRequest().authenticated()              // todo lo demás requiere token
-                );
+                        .requestMatchers("/auth/**").permitAll() //Acceso libre(login, registro)
 
-        // Añadir filtro JWT antes del filtro de autenticación por username/password
+                        // Pacientes
+                        .requestMatchers(HttpMethod.POST, "/api/patients").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/patients/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/patients/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/patients/**").hasAnyAuthority("ADMIN", "DOCTOR")
+
+
+                        // Doctores
+                        .requestMatchers(HttpMethod.POST, "/api/doctors").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/doctors").hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/doctors/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/doctors/**").hasAuthority("ADMIN")
+
+                        // Citas (appointments)
+                        .requestMatchers(HttpMethod.POST, "/api/appointments").hasAnyAuthority("ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.PUT, "/api/appointments/**").hasAnyAuthority("ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/appointments/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/appointments").hasAnyAuthority("ADMIN", "DOCTOR", "PATIENT")
+
+                        .anyRequest().authenticated()
+
+                )
+
+                //Nevegador -> si aplica reglas de CORS, por ello usamos .cors()
+                //.cors() en el HttpSecurity le dice a Spring Security: "habilita soporte para CORS en la capa de seguridad
+                .cors(); //Habilitamos CORS
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Configuración CORS opcional (si tu frontend está en otro dominio)
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*"); // o especifica tu frontend
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    @Bean //Importante junto con .cors() define que origenes, metodos y headers estan permitidos
+    //Sin esta configuracion, el navegador bloquea la peticion antes de que llegue al backend
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:5173"); // tu frontend
+        configuration.addAllowedMethod("*"); // permite GET, POST, PUT, DELETE
+        configuration.addAllowedHeader("*"); // permite todos los headers
+        configuration.setAllowCredentials(true);
+
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
