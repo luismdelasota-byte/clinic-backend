@@ -10,6 +10,7 @@ import java.util.List;
 @RequestMapping("/api/patients")
 public class PatientController {
 
+    //Variable patientService de tipo PatientService
     private final PatientService patientService;
 
     public PatientController(PatientService patientService){
@@ -39,5 +40,24 @@ public class PatientController {
     public void deletePatient(@PathVariable Long id){
         patientService.deletePatient(id);
     }
+
+    //Actualizar paciente
+    @PutMapping("/{id}")
+    public Patient updatePatient(@PathVariable Long id, @RequestBody Patient patient){
+        return patientService.updatePatient(id, patient);
+    }
+
+    // Buscar paciente por email
+    @GetMapping("/email/{email}")
+    public Patient getPatientByEmail(@PathVariable String email) {
+        return patientService.getPatientByEmail(email);
+    }
+
+    // Buscar paciente por nombre
+    @GetMapping("/name/{name}")
+    public List<Patient> getPatientsByName(@PathVariable String name) {
+        return patientService.getPatientsByName(name);
+    }
+
 
 }

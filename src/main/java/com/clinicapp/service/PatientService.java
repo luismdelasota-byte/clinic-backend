@@ -84,4 +84,28 @@ public class PatientService {
     public void deletePatient(Long id){
         patientRepository.deleteById(id);
     }
+
+    public Patient updatePatient(Long id, Patient updatedPatient) {
+
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+
+        // Actualizar campos
+        patient.setName(updatedPatient.getName());
+        patient.setEmail(updatedPatient.getEmail());
+        patient.setPhone(updatedPatient.getPhone());
+        patient.setBirthDate(updatedPatient.getBirthDate());
+
+        return patientRepository.save(patient);
+    }
+
+    public Patient getPatientByEmail(String email) {
+        return patientRepository.findByEmail(email);
+    }
+
+    public List<Patient> getPatientsByName(String name) {
+        return patientRepository.findByNameContainingIgnoreCase(name);
+    }
+
+
 }

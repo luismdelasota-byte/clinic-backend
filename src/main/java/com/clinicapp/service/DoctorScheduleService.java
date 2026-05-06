@@ -5,6 +5,7 @@ import com.clinicapp.repository.DoctorScheduleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,18 @@ public class DoctorScheduleService {
 
     // Crear horario
     public DoctorSchedule saveSchedule(DoctorSchedule schedule) {
+
+        List<String> week =  List.of(
+                "LUNES", "MARTES", "MIERCOLES", "JUEVES",
+                "VIERNES", "SABADO", "DOMINGO"
+        );
+
+        if(schedule.getDayOfWeek() == null || schedule.getDayOfWeek().isBlank() ||
+        !week.contains(schedule.getDayOfWeek().toLowerCase())) {
+
+            throw new IllegalArgumentException("Coloque un dia de la semana correcto...");
+        }
+
         return doctorScheduleRepository.save(schedule);
     }
 
