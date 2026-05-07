@@ -67,26 +67,26 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll() //Acceso libre(login, registro)
 
                         // Pacientes
-                        .requestMatchers(HttpMethod.POST, "/api/patients").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/api/patients/**").hasAnyAuthority("ADMIN", "DOCTOR", "USER")
+                        .requestMatchers(HttpMethod.POST, "/api/patients").hasAnyAuthority("ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/patients/**").hasAnyAuthority("ADMIN", "DOCTOR")
                         .requestMatchers(HttpMethod.PUT, "/api/patients/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/patients/**").hasAuthority("ADMIN")
 
                         // Doctores
                         .requestMatchers(HttpMethod.POST, "/api/doctors").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/doctors").hasAnyAuthority("ADMIN", "USER", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/doctors").hasAnyAuthority("ADMIN","DOCTOR")
                         .requestMatchers(HttpMethod.PUT, "/api/doctors/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/doctors/**").hasAuthority("ADMIN")
 
                         // Citas
-                        .requestMatchers(HttpMethod.POST, "/api/appointments").hasAnyAuthority("ADMIN", "DOCTOR", "USER")
-                        .requestMatchers(HttpMethod.GET, "/api/appointments/**").hasAnyAuthority("ADMIN", "DOCTOR", "USER", "PATIENT")
-                        .requestMatchers(HttpMethod.PUT, "/api/appointments/**").hasAnyAuthority("ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.POST, "/api/appointments").hasAnyAuthority("ADMIN","DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/appointments/**").hasAnyAuthority("ADMIN","DOCTOR","PATIENT")
+                        .requestMatchers(HttpMethod.PUT, "/api/appointments/**").hasAnyAuthority("ADMIN","DOCTOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/appointments/**").hasAuthority("ADMIN")
 
                         // Horarios
-                        .requestMatchers(HttpMethod.POST, "/api/schedules").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/api/schedules/**").hasAnyAuthority("ADMIN", "DOCTOR", "USER", "PATIENT")
+                        .requestMatchers(HttpMethod.POST, "/api/schedules").hasAnyAuthority("ADMIN","DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/schedules/**").hasAnyAuthority("ADMIN", "DOCTOR","PATIENT")
                         .requestMatchers(HttpMethod.PUT, "/api/schedules/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/schedules/**").hasAuthority("ADMIN")
 

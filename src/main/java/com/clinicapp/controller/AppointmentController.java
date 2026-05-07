@@ -1,8 +1,10 @@
 package com.clinicapp.controller;
 
 import com.clinicapp.entity.Appointment;
+import com.clinicapp.entity.Patient;
 import com.clinicapp.service.AppointmentService;
 import org.springframework.web.bind.annotation.*;
+import com.clinicapp.entity.Doctor;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class AppointmentController {
 
     //GET
     @GetMapping
-    public List<Appointment> setAppointmenst(){
+    public List<Appointment> setAppointment(){
         return appointmentService.getAllAppointments();
     }
 
@@ -48,5 +50,12 @@ public class AppointmentController {
     public void  deleteAppointment(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
     }
+
+    @GetMapping("/doctor/{doctorId}")
+    public List<Appointment> getAppointmentsByDoctor(@PathVariable Long doctorId) {
+        return appointmentService.getAppointmentsByDoctor(doctorId);
+    }
+
+
 }
 

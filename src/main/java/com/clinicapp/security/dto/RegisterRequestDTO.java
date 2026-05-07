@@ -22,6 +22,6 @@ public class RegisterRequestDTO {
     private String password;
 
     @NotBlank(message = "Rol requerido")
-    private String role; //"USER" o "ADMIN" o "DOCTOR"
+    private String role; //"ADMIN" o "DOCTOR"
 
 }

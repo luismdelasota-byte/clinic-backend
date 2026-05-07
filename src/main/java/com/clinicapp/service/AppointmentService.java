@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -109,5 +110,10 @@ public class AppointmentService {
 
         return appointmentRepository.save(existing);
     }
+
+    public List<Appointment> getAppointmentsByDoctor(Long doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId);
+    }
+
 }
 
