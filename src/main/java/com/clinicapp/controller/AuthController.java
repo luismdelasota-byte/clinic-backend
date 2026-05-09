@@ -19,6 +19,10 @@ import com.clinicapp.entity.Role;
 
 import com.clinicapp.entity.Doctor;
 import com.clinicapp.repository.DoctorRepository;
+import com.clinicapp.entity.Patient;
+import com.clinicapp.repository.PatientRepository;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,6 +37,7 @@ public class AuthController {
     private final RoleRepository roleRepository;
 
     private final DoctorRepository doctorRepository;
+    private final PatientRepository patientRepository;
 
     //Login
     @PostMapping("/login")
@@ -59,14 +64,22 @@ public class AuthController {
                 token,
                 user.getUsername(),
                 user.getRole().getName(),
+                null,
                 null
         );
 
-        // Si el usuario es doctor, añadimos su doctorId
+        // Si el usuario es doctor
         if (user.getRole().getName().equals("DOCTOR")) {
             Doctor doctor = doctorRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new RuntimeException("Doctor no encontrado"));
             response.setDoctorId(doctor.getId());
+        }
+
+        // Si el usuario es paciente
+        if(user.getRole().getName().equals("PATIENT")){
+            Patient patient = patientRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+            response.setPatientId(patient.getId());
         }
 
         return ResponseEntity.ok(response);
@@ -97,7 +110,27 @@ public class AuthController {
         newUser.setRole(role);
         newUser.setActivate(true);
 
+
+
         userRepository.save(newUser);
+
+        if ("PATIENT".equals(role.getName())) {
+            Patient patient = new Patient();
+            patient.setUser(newUser);
+            patient.setName(request.getUsername()); // o pedirlo en el DTO
+            patient.setEmail(request.getEmail());
+            patient.setPhone("000000000"); // o pedirlo en el DTO
+            patient.setBirthDate(LocalDate.now()); // o pedirlo en el DTO
+            patientRepository.save(patient);
+        }
+
+
+        if ("DOCTOR".equals(role.getName())) {
+            Doctor doctor = new Doctor();
+            doctor.setUser(newUser);
+            doctorRepository.save(doctor);
+        }
+
 
         return ResponseEntity.ok("Usuario registrado");
     }

@@ -12,5 +12,6 @@ public class LoginResponseDTO {
     private String token;      // JWT generado
     private String username;   // Nombre del usuario
     private String role;
-    private Long doctorId;// Rol del usuario (ej: ADMIN)
+    private Long doctorId; // ID del doctor
+    private Long patientId; // ID del paciente
 }

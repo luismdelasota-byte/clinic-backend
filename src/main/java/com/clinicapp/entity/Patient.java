@@ -25,6 +25,10 @@ public class Patient {
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     /*Constructor : crea objetos*/
 
     public Patient(){}
@@ -70,5 +74,13 @@ public class Patient {
 
     public void setBirthDate(LocalDate birthDate){
         this.birthDate = birthDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

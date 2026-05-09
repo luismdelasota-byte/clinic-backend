@@ -112,7 +112,11 @@ public class AppointmentService {
     }
 
     public List<Appointment> getAppointmentsByDoctor(Long doctorId) {
-        return appointmentRepository.findByDoctorId(doctorId);
+        return appointmentRepository.findByDoctor_Id(doctorId);
+    }
+
+    public List<Appointment> getAppointmentsByPatient(Long patientId){
+        return appointmentRepository.findByPatient_Id(patientId);
     }
 
 }
