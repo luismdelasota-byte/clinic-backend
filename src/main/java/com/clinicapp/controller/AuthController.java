@@ -17,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.clinicapp.entity.Role;
 
+import com.clinicapp.entity.Doctor;
+import com.clinicapp.repository.DoctorRepository;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -28,6 +31,8 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+
+    private final DoctorRepository doctorRepository;
 
     //Login
     @PostMapping("/login")
@@ -53,8 +58,16 @@ public class AuthController {
         LoginResponseDTO response = new LoginResponseDTO(
                 token,
                 user.getUsername(),
-                user.getRole().getName()
+                user.getRole().getName(),
+                null
         );
+
+        // Si el usuario es doctor, añadimos su doctorId
+        if (user.getRole().getName().equals("DOCTOR")) {
+            Doctor doctor = doctorRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Doctor no encontrado"));
+            response.setDoctorId(doctor.getId());
+        }
 
         return ResponseEntity.ok(response);
     }

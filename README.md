@@ -149,7 +149,7 @@ Puedes probar la API usando:
 
 ---
 
-## 🚧 Mejoras futuras: En este proyecto no implemente "dto" general pero si para el login
+##  Mejoras futuras: En este proyecto no implemente "dto" general pero si para el login
 * Validaciones con DTOs
 * Manejo global de errores (@ControllerAdvice)
 * Documentación con Swagger

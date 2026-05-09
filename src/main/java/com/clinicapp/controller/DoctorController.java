@@ -2,9 +2,13 @@ package com.clinicapp.controller;
 
 import com.clinicapp.entity.Doctor;
 import com.clinicapp.service.DoctorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.clinicapp.entity.Appointment;
 
 import java.util.List;
+
+import com.clinicapp.service.AppointmentService;
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -12,6 +16,9 @@ public class DoctorController {
 
     //Atributo
     private DoctorService doctorService;
+
+    @Autowired
+    private AppointmentService appointmentService;
 
     //Constructor
     public DoctorController(DoctorService doctorService){
@@ -48,5 +55,11 @@ public class DoctorController {
     @PutMapping("/{id}")
     public Doctor updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor){
         return doctorService.updateDoctor(id, doctor);
+    }
+
+    // Traer todas las citas y pacientes de un doctor
+    @GetMapping("/{doctorId}/appointments")
+    public List<Appointment> getAppointmentsByDoctor(@PathVariable Long doctorId) {
+        return appointmentService.getAppointmentsByDoctor(doctorId);
     }
 }

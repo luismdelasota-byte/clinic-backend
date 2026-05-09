@@ -25,6 +25,10 @@ public class Doctor {
 
     private String phone;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     /*Constructor*/
     public Doctor(){}
 
@@ -82,4 +86,13 @@ public class Doctor {
     public void setPhone(String phone){
         this.phone = phone;
     }
+
+    public User getUser(){
+        return user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
+
 }
