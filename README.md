@@ -59,8 +59,20 @@ Authorization: Bearer TOKEN_GENERADO
 ```
 GET    /api/users
 POST   /api/users
+GET    /api/users/{id}
 PUT    /api/users/{id}
 DELETE /api/users/{id}
+
+```
+
+### Roles
+
+```
+GET    /api/roles
+POST   /api/roles
+GET    /api/roles/{id}
+DELETE /api/roles/{id}
+
 ```
 
 ### Pacientes
@@ -68,8 +80,12 @@ DELETE /api/users/{id}
 ```
 GET    /api/patients
 POST   /api/patients
+GET    /api/patients/{id}
 PUT    /api/patients/{id}
 DELETE /api/patients/{id}
+GET    /api/patients/email/{email}
+GET    /api/patients/name/{name}
+
 ```
 
 ### Doctores
@@ -77,8 +93,11 @@ DELETE /api/patients/{id}
 ```
 GET    /api/doctors
 POST   /api/doctors
+GET    /api/doctors/{id}
 PUT    /api/doctors/{id}
 DELETE /api/doctors/{id}
+GET    /api/doctors/{doctorId}/appointments
+
 ```
 
 ### Citas (Appointments)
@@ -86,8 +105,25 @@ DELETE /api/doctors/{id}
 ```
 GET    /api/appointments
 POST   /api/appointments
+GET    /api/appointments/{id}
 PUT    /api/appointments/{id}
 DELETE /api/appointments/{id}
+GET    /api/appointments/doctor/{doctorId}
+GET    /api/appointments/patient/{patientId}
+
+```
+
+### Horario Doctores(DoctorSchedule)
+
+```
+GET    /api/schedules
+POST   /api/schedules
+GET    /api/schedules/{id}
+GET    /api/schedules/doctor/{doctorId}
+GET    /api/schedules/day/{dayOfWeek}
+PUT    /api/schedules/{id}
+DELETE /api/schedules/{id}
+
 ```
 
 ---
@@ -101,22 +137,31 @@ src/main/java/com/clinicapp
  │    ├── Role
  │    ├── Patient
  │    ├── Doctor
- │    └── Appointment
+ │    ├── Appointment
+ │    └── DoctorSchedule 
  │
  ├── repository
- │    └── (interfaces JPA)
+ │    ├── UserRepository
+ │    ├── PatientRepository
+ │    ├── DoctorRepository
+ │    ├── AppointmentRepository
+ │    └── DoctorScheduleRepository   
  │
  ├── service
- │    └── (lógica de negocio)
+ │    ├── UserService
+ │    ├── PatientService
+ │    ├── DoctorService
+ │    ├── AppointmentService
+ │    └── DoctorScheduleService   
  │
  ├── controller
  │    ├── AuthController
- |    ├── RoleController
+ │    ├── RoleController
  │    ├── UserController
  │    ├── PatientController
  │    ├── DoctorController
- │    └── AppointmentController
- │
+ │    ├── AppointmentController
+ │    └── DoctorScheduleController  
  └── security
       ├── config
       │    └── SecurityConfig
@@ -126,6 +171,7 @@ src/main/java/com/clinicapp
       │    └── RegisterRequestDTO
       └── service
            └── CustomUserDetailsService
+
 ```
 
 ---
