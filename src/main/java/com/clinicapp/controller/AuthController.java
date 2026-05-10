@@ -110,27 +110,29 @@ public class AuthController {
         newUser.setRole(role);
         newUser.setActivate(true);
 
-
-
         userRepository.save(newUser);
 
+        // Crear entidad asociada según el rol
         if ("PATIENT".equals(role.getName())) {
             Patient patient = new Patient();
             patient.setUser(newUser);
-            patient.setName(request.getUsername()); // o pedirlo en el DTO
+            patient.setName(request.getUsername());
             patient.setEmail(request.getEmail());
-            patient.setPhone("000000000"); // o pedirlo en el DTO
-            patient.setBirthDate(LocalDate.now()); // o pedirlo en el DTO
+            patient.setPhone("000000000");
+            patient.setBirthDate(LocalDate.now());
             patientRepository.save(patient);
-        }
-
-
-        if ("DOCTOR".equals(role.getName())) {
+        } if ("DOCTOR".equals(role.getName())) {
             Doctor doctor = new Doctor();
             doctor.setUser(newUser);
+            doctor.setName(request.getUsername());
+            doctor.setEmail(request.getEmail());
+            doctor.setPhone("000000000"); // 👈 valor por defecto si es obligatorio
+            doctor.setSpeciality("General"); // 👈 si tu entidad lo requiere
             doctorRepository.save(doctor);
+        } else if ("ADMIN".equals(role.getName())) {
+            // Para ADMIN no se crea entidad adicional
+            System.out.println("Usuario ADMIN registrado correctamente");
         }
-
 
         return ResponseEntity.ok("Usuario registrado");
     }

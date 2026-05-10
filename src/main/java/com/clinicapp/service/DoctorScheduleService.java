@@ -21,15 +21,14 @@ public class DoctorScheduleService {
     // Crear horario
     public DoctorSchedule saveSchedule(DoctorSchedule schedule) {
 
-        List<String> week =  List.of(
-                "LUNES", "MARTES", "MIERCOLES", "JUEVES",
-                "VIERNES", "SABADO", "DOMINGO"
+        List<String> week = List.of(
+                "lunes", "martes", "miercoles", "jueves",
+                "viernes", "sabado", "domingo"
         );
 
-        if(schedule.getDayOfWeek() == null || schedule.getDayOfWeek().isBlank() ||
-        !week.contains(schedule.getDayOfWeek().toLowerCase())) {
-
-            throw new IllegalArgumentException("Coloque un dia de la semana correcto...");
+        if (schedule.getDayOfWeek() == null || schedule.getDayOfWeek().isBlank() ||
+                !week.contains(schedule.getDayOfWeek().toLowerCase())) {
+            throw new IllegalArgumentException("Coloque un día de la semana correcto...");
         }
 
         return doctorScheduleRepository.save(schedule);
