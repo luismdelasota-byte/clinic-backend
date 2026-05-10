@@ -144,6 +144,7 @@ src/main/java/com/clinicapp
  │    ├── UserRepository
  │    ├── PatientRepository
  │    ├── DoctorRepository
+ |    ├── RoleRespository
  │    ├── AppointmentRepository
  │    └── DoctorScheduleRepository   
  │
@@ -151,6 +152,7 @@ src/main/java/com/clinicapp
  │    ├── UserService
  │    ├── PatientService
  │    ├── DoctorService
+ |    ├── RoleService
  │    ├── AppointmentService
  │    └── DoctorScheduleService   
  │
@@ -170,7 +172,11 @@ src/main/java/com/clinicapp
       │    ├── LoginResponseDTO
       │    └── RegisterRequestDTO
       └── service
-           └── CustomUserDetailsService
+      |     └── CustomUserDetailsService
+      |__ jwt
+            |__ JwtFilter
+            |__ JwtUtil
+          
 
 ```
 
