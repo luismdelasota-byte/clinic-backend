@@ -2,6 +2,7 @@ services:
   - type: web
     name: clinic-backend
     env: java
+    plan: free
     buildCommand: "./mvnw clean package"
     startCommand: "java -jar target/*.jar"
     envVars:
