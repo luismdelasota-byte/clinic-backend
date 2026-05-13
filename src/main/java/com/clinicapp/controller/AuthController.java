@@ -126,8 +126,9 @@ public class AuthController {
             doctor.setUser(newUser);
             doctor.setName(request.getUsername());
             doctor.setEmail(request.getEmail());
-            doctor.setPhone("000000000"); // 👈 valor por defecto si es obligatorio
-            doctor.setSpeciality("General"); // 👈 si tu entidad lo requiere
+            doctor.setPhone("000000000"); // valor por defecto si es obligatorio
+            doctor.setSpeciality("General"); // si tu entidad lo requiere
+            doctor.setCmp((int) (Math.random() * 90000) + 10000); // Asigna un CMP aleatorio para que no choque el Unique Constraint
             doctorRepository.save(doctor);
         } else if ("ADMIN".equals(role.getName())) {
             // Para ADMIN no se crea entidad adicional
