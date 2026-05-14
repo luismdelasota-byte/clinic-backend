@@ -175,6 +175,7 @@ public class DataSeeder implements CommandLineRunner {
                 report.setPatient(p);
                 report.setDescription("Informe detallado sobre evolución post-tratamiento en el área de " + d.getSpeciality());
                 report.setRequiresHospitalization(false);
+                medicalReportRepository.save(report);
             }
         }
 
