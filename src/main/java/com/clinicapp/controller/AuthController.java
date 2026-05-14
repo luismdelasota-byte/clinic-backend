@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.clinicapp.entity.Role;
 
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Transactional
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;

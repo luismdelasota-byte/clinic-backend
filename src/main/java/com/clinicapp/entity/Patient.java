@@ -19,10 +19,10 @@ public class Patient {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String phone;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @OneToOne
