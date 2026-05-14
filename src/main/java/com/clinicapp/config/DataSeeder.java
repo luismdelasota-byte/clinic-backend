@@ -77,7 +77,7 @@ public class DataSeeder implements CommandLineRunner {
             .filter(d -> d.getUser().getUsername().equals("doctor1"))
             .findFirst()
             .ifPresent(doc1 -> {
-                if (appointmentRepository.findByDoctorId(doc1.getId()).size() < 5) {
+                if (appointmentRepository.findByDoctor_Id(doc1.getId()).size() < 5) {
                     List<Patient> patients = patientRepository.findAll();
                     if (!patients.isEmpty()) {
                         for (int i = 0; i < 8; i++) {
