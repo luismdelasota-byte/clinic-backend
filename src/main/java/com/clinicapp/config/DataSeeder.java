@@ -23,6 +23,9 @@ public class DataSeeder implements CommandLineRunner {
     private final AppointmentRepository appointmentRepository;
     private final RoleRepository roleRepository;
     private final DoctorScheduleRepository scheduleRepository;
+    private final ClinicalHistoryRepository clinicalHistoryRepository;
+    private final MedicalLeaveRepository medicalLeaveRepository;
+    private final MedicalReportRepository medicalReportRepository;
     private final PasswordEncoder passwordEncoder;
     private final Random random = new Random();
 
@@ -32,6 +35,9 @@ public class DataSeeder implements CommandLineRunner {
                       AppointmentRepository appointmentRepository,
                       RoleRepository roleRepository,
                       DoctorScheduleRepository scheduleRepository,
+                      ClinicalHistoryRepository clinicalHistoryRepository,
+                      MedicalLeaveRepository medicalLeaveRepository,
+                      MedicalReportRepository medicalReportRepository,
                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.doctorRepository = doctorRepository;
@@ -39,13 +45,15 @@ public class DataSeeder implements CommandLineRunner {
         this.appointmentRepository = appointmentRepository;
         this.roleRepository = roleRepository;
         this.scheduleRepository = scheduleRepository;
+        this.clinicalHistoryRepository = clinicalHistoryRepository;
+        this.medicalLeaveRepository = medicalLeaveRepository;
+        this.medicalReportRepository = medicalReportRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // 1. Asegurar Roles
         ensureRole("ADMIN");
         ensureRole("DOCTOR");
         ensureRole("PATIENT");
@@ -54,10 +62,8 @@ public class DataSeeder implements CommandLineRunner {
         Role doctorRole = roleRepository.findByName("DOCTOR").get();
         Role patientRole = roleRepository.findByName("PATIENT").get();
 
-        // 2. Asegurar ADMIN
         ensureAdmin(adminRole);
 
-        // 3. Poblar Doctores (si hay menos de 5)
         if (doctorRepository.count() < 5) {
             seedFlow(doctorRole, patientRole);
         }
@@ -99,7 +105,6 @@ public class DataSeeder implements CommandLineRunner {
             Doctor d = createDoctor(username, username + "@clinic.com", docNames[i], specialties[i], 10000 + i, doctorRole);
             savedDoctors.add(d);
             
-            // Crear horarios para cada doctor
             for (String day : days) {
                 scheduleRepository.save(new DoctorSchedule(d, day, LocalTime.of(8, 0), LocalTime.of(13, 0)));
                 scheduleRepository.save(new DoctorSchedule(d, day, LocalTime.of(15, 0), LocalTime.of(18, 0)));
@@ -114,23 +119,53 @@ public class DataSeeder implements CommandLineRunner {
             savedPatients.add(p);
         }
 
-        // Crear Citas para generar el flujo
-        for (int i = 0; i < 20; i++) {
+        // Crear Citas y Documentos Clínicos
+        for (int i = 0; i < 15; i++) {
             Doctor d = savedDoctors.get(random.nextInt(savedDoctors.size()));
             Patient p = savedPatients.get(random.nextInt(savedPatients.size()));
-            createAppointment(d, p, LocalDateTime.now().plusDays(random.nextInt(7)).withHour(9 + random.nextInt(8)).withMinute(0));
+            Appointment appt = createAppointment(d, p, LocalDateTime.now().minusDays(random.nextInt(10)).withHour(9 + random.nextInt(8)).withMinute(0), "COMPLETED");
+            
+            // Crear Diario Clínico
+            ClinicalHistory history = new ClinicalHistory();
+            history.setDoctor(d);
+            history.setPatient(p);
+            history.setAppointment(appt);
+            history.setDiagnosis("Diagnóstico preventivo para " + p.getName() + " realizado por " + d.getName());
+            history.setTreatment("Tratamiento de seguimiento indicado: reposo y medicación estándar.");
+            clinicalHistoryRepository.save(history);
+
+            // Crear Descanso Médico para algunos
+            if (i % 3 == 0) {
+                MedicalLeave leave = new MedicalLeave();
+                leave.setDoctor(d);
+                leave.setPatient(p);
+                leave.setReason("Reposo absoluto por complicación en " + d.getSpeciality());
+                leave.setStartDate(LocalDate.now());
+                leave.setEndDate(LocalDate.now().plusDays(3));
+                medicalLeaveRepository.save(leave);
+            }
+
+            // Crear Informe para otros
+            if (i % 5 == 0) {
+                MedicalReport report = new MedicalReport();
+                report.setDoctor(d);
+                report.setPatient(p);
+                report.setDescription("Informe detallado sobre evolución post-tratamiento en el área de " + d.getSpeciality());
+                report.setRequiresHospitalization(false);
+                medicalReportRepository.save(report);
+            }
         }
 
-        System.out.println(">>> Flujo clínico poblado exitosamente (Admin, Doctores, Pacientes, Horarios y Citas).");
+        System.out.println(">>> Flujo clínico completo generado exitosamente.");
     }
 
-    private void createAppointment(Doctor doctor, Patient patient, LocalDateTime date) {
+    private Appointment createAppointment(Doctor doctor, Patient patient, LocalDateTime date, String status) {
         Appointment appt = new Appointment();
         appt.setDoctor(doctor);
         appt.setPatient(patient);
         appt.setAppointmentDate(date);
-        appt.setStatus("SCHEDULED");
-        appointmentRepository.save(appt);
+        appt.setStatus(status);
+        return appointmentRepository.save(appt);
     }
 
     private Doctor createDoctor(String username, String email, String name, String speciality, int cmp, Role role) {
