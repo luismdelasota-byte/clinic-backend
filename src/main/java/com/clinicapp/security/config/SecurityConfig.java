@@ -122,13 +122,9 @@ public class SecurityConfig {
     public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
         
-        // Permitimos cualquier origen temporalmente para asegurar que las Preview URLs de Vercel funcionen
-        // En produccion real, lo ideal es listar los dominios especificos
-        configuration.setAllowedOriginPatterns(java.util.Arrays.asList(
-            "http://localhost:*",
-            "https://*.vercel.app",
-            "https://clinic-frontend-sable-six.vercel.app"
-        ));
+        // Permitimos cualquier origen para asegurar que las Preview URLs de Vercel funcionen
+        configuration.addAllowedOriginPattern("*");
+
         
         configuration.addAllowedMethod("*"); 
         configuration.addAllowedHeader("*"); 

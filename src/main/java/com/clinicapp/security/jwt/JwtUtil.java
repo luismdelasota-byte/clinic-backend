@@ -37,6 +37,7 @@ public class JwtUtil {
                 .compact(); //devuelve el token como String
     }
 
+
     public String extractRole(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
