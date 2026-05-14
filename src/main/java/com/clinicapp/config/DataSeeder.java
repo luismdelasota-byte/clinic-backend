@@ -152,8 +152,18 @@ public class DataSeeder implements CommandLineRunner {
                 report.setPatient(p);
                 report.setDescription("Informe detallado sobre evolución post-tratamiento en el área de " + d.getSpeciality());
                 report.setRequiresHospitalization(false);
-                medicalReportRepository.save(report);
             }
+        }
+
+        // Asegurar que doctor1 tenga una agenda activa con citas próximas
+        Doctor doc1 = savedDoctors.stream()
+                .filter(d -> d.getUser().getUsername().equals("doctor1"))
+                .findFirst()
+                .orElse(savedDoctors.get(0));
+                
+        for (int i = 0; i < 8; i++) {
+            Patient p = savedPatients.get(random.nextInt(savedPatients.size()));
+            createAppointment(doc1, p, LocalDateTime.now().plusDays(i + 1).withHour(9 + (i % 4)).withMinute(0), "SCHEDULED");
         }
 
         System.out.println(">>> Flujo clínico completo generado exitosamente.");
