@@ -2,6 +2,9 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY . .
 RUN ./mvnw clean package -DskipTests
-EXPOSE 8080
-CMD ["java", "-jar", "target/*.jar"]
 
+# Render asigna el puerto dinámico en la variable PORT
+EXPOSE 8080
+
+# Usamos la variable PORT para que Spring Boot escuche correctamente
+CMD ["java", "-jar", "target/backend-0.0.1-SNAPSHOT.jar"]
