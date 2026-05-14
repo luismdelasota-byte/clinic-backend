@@ -210,9 +210,9 @@ Puedes probar la API usando:
 
 ---
 
-## Autor
+## DESPLOY
 
-Luis De la Sota
+Backend se desplegó en Render, uso se Railway para conexión con la base de datos.
 
 ##  Contacto
 
