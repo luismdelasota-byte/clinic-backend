@@ -98,9 +98,10 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Email ya existe");
         }
 
-        // BUSCAR EL ROLE EXISTENTE
-        Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> new RuntimeException("Role no encontrado"));
+        // BUSCAR EL ROLE EXISTENTE (ignora mayusculas/minusculas)
+        Role role = roleRepository.findByName(request.getRole().toUpperCase())
+                .orElseThrow(() -> new RuntimeException("Role no encontrado: " + request.getRole()));
+
 
         // Guardar usuario en la base de datos
         User newUser = new User();
