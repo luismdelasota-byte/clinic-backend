@@ -91,17 +91,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/schedules/**").hasAuthority("ADMIN")
 
                         // Diarios Clínicos
-                        .requestMatchers(HttpMethod.POST, "/api/clinical-histories").hasAnyAuthority("ADMIN","DOCTOR")
+                        .requestMatchers(HttpMethod.POST, "/api/clinical-histories").hasAuthority("DOCTOR")
                         .requestMatchers(HttpMethod.GET, "/api/clinical-histories/**").hasAnyAuthority("ADMIN", "DOCTOR", "PATIENT")
                         .requestMatchers(HttpMethod.DELETE, "/api/clinical-histories/**").hasAuthority("ADMIN")
 
                         // Descansos Médicos
-                        .requestMatchers(HttpMethod.POST, "/api/medical-leaves").hasAnyAuthority("ADMIN","DOCTOR")
+                        .requestMatchers(HttpMethod.POST, "/api/medical-leaves").hasAuthority("DOCTOR")
                         .requestMatchers(HttpMethod.GET, "/api/medical-leaves/**").hasAnyAuthority("ADMIN", "DOCTOR", "PATIENT")
                         .requestMatchers(HttpMethod.DELETE, "/api/medical-leaves/**").hasAuthority("ADMIN")
 
                         // Informes Médicos
-                        .requestMatchers(HttpMethod.POST, "/api/medical-reports").hasAnyAuthority("ADMIN","DOCTOR")
+                        .requestMatchers(HttpMethod.POST, "/api/medical-reports").hasAuthority("DOCTOR")
                         .requestMatchers(HttpMethod.GET, "/api/medical-reports/**").hasAnyAuthority("ADMIN", "DOCTOR", "PATIENT")
                         .requestMatchers(HttpMethod.DELETE, "/api/medical-reports/**").hasAuthority("ADMIN")
 

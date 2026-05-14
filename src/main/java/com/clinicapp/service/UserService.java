@@ -69,4 +69,18 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public User updateUser(Long id, User userDetails) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setEmail(userDetails.getEmail().toLowerCase());
+        user.setUsername(userDetails.getUsername().toLowerCase());
+        return userRepository.save(user);
+    }
+
+    public void changePassword(Long id, String newPassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

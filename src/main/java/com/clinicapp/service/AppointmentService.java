@@ -63,12 +63,9 @@ public class AppointmentService {
             throw new RuntimeException("El estado de la cita es obligatorio.");
         }
 
-        List<String> status  = List.of("SCHEDULED", "CANCELLED", "COMPLETED");
-        //contains: se usa en listas -> Verifica o busca si la coleccion o cadena contiene un elemento especifico
-        //Es decir busca dentro de la lista si existe exactamente ese valor
-        //equals: se usa en objetos(String, Integet, etc ) -> Compara si dos objetos son exactamente iguales en contenido
+        List<String> status  = List.of("PENDING", "IN_CONSULTATION", "COMPLETED", "CANCELLED", "NO_SHOW", "SCHEDULED");
         if (!status.contains(appointment.getStatus())){
-            throw new RuntimeException("El estado debe ser SCHEDULED, CANCELLED o COMPLETED.");
+            throw new RuntimeException("El estado debe ser PENDING, IN_CONSULTATION, COMPLETED, CANCELLED o NO_SHOW.");
         }
         return appointmentRepository.save(appointment);
     }
@@ -119,5 +116,17 @@ public class AppointmentService {
         return appointmentRepository.findByPatient_Id(patientId);
     }
 
+    public Appointment updateStatus(Long id, String newStatus) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+        
+        List<String> allowedStatus = List.of("PENDING", "IN_CONSULTATION", "COMPLETED", "CANCELLED", "NO_SHOW", "SCHEDULED");
+        if (!allowedStatus.contains(newStatus.toUpperCase())) {
+            throw new RuntimeException("Estado no válido: " + newStatus);
+        }
+        
+        appointment.setStatus(newStatus.toUpperCase());
+        return appointmentRepository.save(appointment);
+    }
 }
 

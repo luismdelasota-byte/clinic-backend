@@ -61,6 +61,12 @@ public class AppointmentController {
         return appointmentService.getAppointmentsByPatient(patientId);
     }
 
+    @PatchMapping("/{id}/status")
+    public Appointment updateStatus(@PathVariable Long id, @RequestBody String status) {
+        // En caso de que el status venga con comillas si es un string plano en JSON
+        String cleanStatus = status.replace("\"", "");
+        return appointmentService.updateStatus(id, cleanStatus);
+    }
 
 }
 

@@ -36,4 +36,15 @@ public class UserController {
     public void deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
     }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
+    }
+
+    @PatchMapping("/{id}/password")
+    public void changePassword(@PathVariable Long id, @RequestBody String newPassword) {
+        String cleanPassword = newPassword.replace("\"", "");
+        userService.changePassword(id, cleanPassword);
+    }
 }
