@@ -56,7 +56,11 @@ public class AuthController {
         // Si autenticación exitosa, obtenemos el usuario
         User user = userRepository.findByEmail(request.getUsernameOrEmail())
                 .orElseGet(() -> userRepository.findByUsername(request.getUsernameOrEmail())
-                        .orElseThrow(() -> new RuntimeException("No se encontro")));
+                        .orElseThrow(() -> new RuntimeException("Credenciales válidas pero usuario no encontrado en base de datos")));
+
+        if (user.getRole() == null) {
+            throw new RuntimeException("El usuario no tiene un rol asignado. Contacte al administrador.");
+        }
 
         // Generamos el token JWT
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().getName());
