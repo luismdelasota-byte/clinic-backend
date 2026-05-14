@@ -67,6 +67,29 @@ public class DataSeeder implements CommandLineRunner {
         if (doctorRepository.count() < 5) {
             seedFlow(doctorRole, patientRole);
         }
+        
+        // 4. Asegurar agenda para doctor1 específicamente
+        seedAgendaForDoctor1();
+    }
+
+    private void seedAgendaForDoctor1() {
+        doctorRepository.findAll().stream()
+            .filter(d -> d.getUser().getUsername().equals("doctor1"))
+            .findFirst()
+            .ifPresent(doc1 -> {
+                if (appointmentRepository.findByDoctorId(doc1.getId()).size() < 5) {
+                    List<Patient> patients = patientRepository.findAll();
+                    if (!patients.isEmpty()) {
+                        for (int i = 0; i < 8; i++) {
+                            Patient p = patients.get(random.nextInt(patients.size()));
+                            // Algunas hoy, otras mañana
+                            int daysOffset = (i < 3) ? 0 : i; 
+                            createAppointment(doc1, p, LocalDateTime.now().plusDays(daysOffset).withHour(9 + (i % 6)).withMinute(0), "SCHEDULED");
+                        }
+                        System.out.println(">>> Agenda de doctor1 poblada con 8 citas nuevas.");
+                    }
+                }
+            });
     }
 
     private void ensureRole(String name) {
