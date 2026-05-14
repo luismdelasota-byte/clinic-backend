@@ -124,19 +124,19 @@ public class AuthController {
         if ("PATIENT".equals(role.getName())) {
             Patient patient = new Patient();
             patient.setUser(newUser);
-            patient.setName(request.getUsername());
+            patient.setName("Paciente Nuevo (Sin completar)");
             patient.setEmail(request.getEmail());
-            patient.setPhone("000000000");
-            patient.setBirthDate(LocalDate.now());
+            patient.setPhone("");
+            patient.setBirthDate(null);
             patientRepository.save(patient);
-        } if ("DOCTOR".equals(role.getName())) {
+        } else if ("DOCTOR".equals(role.getName())) {
             Doctor doctor = new Doctor();
             doctor.setUser(newUser);
-            doctor.setName(request.getUsername());
+            doctor.setName("Doctor Nuevo (Sin completar)");
             doctor.setEmail(request.getEmail());
-            doctor.setPhone("000000000"); // valor por defecto si es obligatorio
-            doctor.setSpeciality("General"); // si tu entidad lo requiere
-            doctor.setCmp((int) (Math.random() * 90000) + 10000); // Asigna un CMP aleatorio para que no choque el Unique Constraint
+            doctor.setPhone("");
+            doctor.setSpeciality("General");
+            doctor.setCmp((int) (Math.random() * 90000) + 10000);
             doctorRepository.save(doctor);
         } else if ("ADMIN".equals(role.getName())) {
             // Para ADMIN no se crea entidad adicional
