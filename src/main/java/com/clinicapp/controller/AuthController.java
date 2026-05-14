@@ -98,9 +98,15 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Email ya existe");
         }
 
-        // BUSCAR EL ROLE EXISTENTE (ignora mayusculas/minusculas)
-        Role role = roleRepository.findByName(request.getRole().toUpperCase())
-                .orElseThrow(() -> new RuntimeException("Role no encontrado: " + request.getRole()));
+        // BUSCAR EL ROLE EXISTENTE (ignora mayusculas/minusculas y espacios)
+        Role role = roleRepository.findByName(request.getRole().trim().toUpperCase())
+                .orElseGet(() -> {
+                    System.out.println("ERROR: No se encontro el rol: '" + request.getRole() + "'");
+                    System.out.println("Roles disponibles en la BD:");
+                    roleRepository.findAll().forEach(r -> System.out.println("- '" + r.getName() + "' (largo: " + r.getName().length() + ")"));
+                    throw new RuntimeException("Role no encontrado: " + request.getRole());
+                });
+
 
 
         // Guardar usuario en la base de datos
