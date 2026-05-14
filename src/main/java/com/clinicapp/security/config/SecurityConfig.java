@@ -118,24 +118,26 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean //Importante junto con .cors() define que origenes, metodos y headers estan permitidos
-    //Sin esta configuracion, el navegador bloquea la peticion antes de que llegue al backend
+    @Bean
     public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
         
-        // Permitimos tanto localhost para desarrollo como el dominio de Vercel para produccion
-        configuration.setAllowedOrigins(java.util.Arrays.asList(
-            "http://localhost:5173",
+        // Permitimos cualquier origen temporalmente para asegurar que las Preview URLs de Vercel funcionen
+        // En produccion real, lo ideal es listar los dominios especificos
+        configuration.setAllowedOriginPatterns(java.util.Arrays.asList(
+            "http://localhost:*",
+            "https://*.vercel.app",
             "https://clinic-frontend-sable-six.vercel.app"
         ));
         
-        configuration.addAllowedMethod("*"); // permite GET, POST, PUT, DELETE
-        configuration.addAllowedHeader("*"); // permite todos los headers
+        configuration.addAllowedMethod("*"); 
+        configuration.addAllowedHeader("*"); 
         configuration.setAllowCredentials(true);
 
         org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
 }
