@@ -26,6 +26,9 @@ public class User {
     @Column(name = "activate")
     private Boolean activate = true;
 
+    @Column(name = "full_name")
+    private String fullName;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
